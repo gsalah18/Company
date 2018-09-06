@@ -5,12 +5,9 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.servlet.jsp.SkipPageException;
 
 import models.Task;
 import models.User;
@@ -32,7 +29,7 @@ public class DatabaseUtil {
 		}
 	}
 
-	public static DatabaseUtil getInstance() {
+	public synchronized static DatabaseUtil getInstance() {
 		if(instance==null) {
 			instance=new DatabaseUtil();
 		}

@@ -8,7 +8,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import models.User;
 import utils.DatabaseUtil;
 
 public class LoginServlet extends HttpServlet {
@@ -69,7 +68,7 @@ public class LoginServlet extends HttpServlet {
 			sendResponseMSG(msg);
 			return false;
 		} else if (userType.length() == 0) {
-			msg = "Wrong Id or Password";
+			msg = "Wrong Username or Password";
 			sendResponseMSG(msg);
 			return false;
 		}

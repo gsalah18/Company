@@ -33,22 +33,6 @@
 </head>
 <body>
 	<script type="text/javascript" src="js/login.js"></script>
-	<c:if
-		test="${cookie.containsKey('userId') && cookie.containsKey('userType')}">
-		<c:set scope="session" var="userId" value="${cookie.userId.value}" />
-		<c:set scope="session" var="userType" value="${cookie.userType.value}" />
-		<c:choose>
-			<c:when test="${ cookie.userType.value == 'Manager' }">
-				<c:redirect url="managerhome"/>
-			</c:when>
-			<c:when test="${ cookie.userType.value == 'Team Leader' }">
-				<c:redirect url="teamleaderhome"/>
-			</c:when>
-			<c:otherwise>
-				<c:redirect url="developerhome"/>
-			</c:otherwise>
-		</c:choose>
-	</c:if>
 
 	<div class="container" style="padding: 20px">
 		<div class="row">
