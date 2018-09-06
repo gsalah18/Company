@@ -24,11 +24,14 @@
 <script type="text/javascript" src="js/addData.js"></script>
 <script type="text/javascript" src="js/tableUtils.js"></script>
 
-
+<style type="text/css">
+ .row{
+ 	padding: 20px;
+ }
 </style>
 </head>
 <body>
-	<nav class="navbar navbar-expand-lg navbar-light bg-light">
+	<nav class="navbar navbar-expand-lg navbar-light bg-light" style="background-color: ${backgroundColor}">
 		<a class="navbar-brand" href="#">Metropolis Company</a>
 		<button class="navbar-toggler" type="button" data-toggle="collapse"
 			data-target="#navbarSupportedContent"
@@ -39,13 +42,27 @@
 
 		<div class="collapse navbar-collapse" id="navbarSupportedContent">
 			<ul class="navbar-nav mr-auto">
-				<li class="nav-item active"><a class="nav-link" href="managerHome">Home
-						<span class="sr-only">(current)</span>
+				<li class="nav-item active"><a class="nav-link"
+					href="index">Home <span class="sr-only">(current)</span>
 				</a></li>
-				
+				<li class="nav-item"><a class="nav-link" href="#"
+					id="goBackBtn">Go Back</a></li>
+				<li class="nav-item"><a class="nav-link" href="#" id="logout">Logout</a></li>
 			</ul>
 		</div>
 	</nav>
-
+	<script type="text/javascript">
+		$("#goBackBtn").click(function() {
+			window.history.back();
+		});
+		$("#logout")
+				.click(
+						function() {
+							document.cookie = 'userId=;expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+							document.cookie = 'userType=;expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+							window.location.href = "index";
+							
+						})
+	</script>
 
 </body>

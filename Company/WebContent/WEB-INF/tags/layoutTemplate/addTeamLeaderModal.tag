@@ -11,8 +11,8 @@
 					<button type="button" class="close" data-dismiss="modal">&times;</button>
 				</div>
 				
-				<form name="addTeamLeaderFrom" id="addTeamLeaderFrom"
-					action="addteamleader" method="POST">
+				<form name="addTeamLeaderForm" id="addDeveloperForm"
+					action="adduser" method="POST">
 
 					<div class="modal-body">
 
@@ -26,6 +26,8 @@
 								id="password" class="form-control" type="password"
 								placeholder="Enter The Password">
 						</div>
+						<input type="hidden" name="type" value="1">
+						<input type="hidden" name="manager" value="${ sessionScope.userId }">
 					</div>
 
 

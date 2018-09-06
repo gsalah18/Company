@@ -2,18 +2,25 @@ package models;
 
 import java.util.List;
 
-import utils.DatabaseUtil;
-
 public class User {
+	
+	private static User instance = new User();
+	
 	private int id;
 	private String name;
 	private String password;
 	private String type;
 
-	private static DatabaseUtil databaseUtil = new DatabaseUtil();
-
+	
+	public static User getInstance() {
+		return instance;
+	}
+	
 	public User() {
-
+		id=0;
+		name="";
+		password="";
+		type="";
 	}
 
 	public User(int id, String name, String password, String type) {
@@ -61,20 +68,4 @@ public class User {
 		this.type = type;
 	}
 
-	public static String getUserType(int id, String password) {
-		return databaseUtil.getUserType(id, password);
-	}
-
-	public static List<User> getUsersforUser(int user_id) {
-
-		return databaseUtil.getUsers(user_id);
-	}
-
-	public static boolean addTeamLeader(User teamLeader, int manager_id) {
-		return databaseUtil.insertTeamLeader(teamLeader, manager_id);
-	}
-
-	public static boolean addDeveloper(User developer, int teamLeaderId) {
-		return databaseUtil.insertDeveloper(developer, teamLeaderId);
-	}
 }

@@ -37,16 +37,33 @@
   
   <servlet>
     <servlet-name>ManagerHome</servlet-name>
-    <servlet-class>servlets.manager.Home</servlet-class>
+    <servlet-class>servlets.Home</servlet-class>
   </servlet>
   <servlet-mapping>
     <servlet-name>ManagerHome</servlet-name>
-    <url-pattern>/managerHome</url-pattern>
+    <url-pattern>/managerhome</url-pattern>
+  </servlet-mapping>
+  
+  <servlet>
+    <servlet-name>TeamLeaderHome</servlet-name>
+    <servlet-class>servlets.Home</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>TeamLeaderHome</servlet-name>
+    <url-pattern>/teamleaderhome</url-pattern>
+  </servlet-mapping>
+  <servlet>
+    <servlet-name>DeveloperHome</servlet-name>
+    <servlet-class>servlets.Home</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>DeveloperHome</servlet-name>
+    <url-pattern>/developerhome</url-pattern>
   </servlet-mapping>
   
   <servlet>
   	<servlet-name>showDevelopers</servlet-name>
-  	<servlet-class>servlets.ShowDevelopers</servlet-class>
+  	<servlet-class>servlets.Developers</servlet-class>
   </servlet>
   <servlet-mapping>
   	<servlet-name>showDevelopers</servlet-name>
@@ -55,7 +72,7 @@
   
   <servlet>
   	<servlet-name>showTasks</servlet-name>
-  	<servlet-class>servlets.ShowTasks</servlet-class>
+  	<servlet-class>servlets.Tasks</servlet-class>
   </servlet>
   <servlet-mapping>
   	<servlet-name>showTasks</servlet-name>
@@ -63,21 +80,40 @@
   </servlet-mapping>
   
   <servlet>
-  	<servlet-name>addTeamLeader</servlet-name>
-  	<servlet-class>servlets.AddTeamLeader</servlet-class>
+  	<servlet-name>addUser</servlet-name>
+  	<servlet-class>servlets.AddUser</servlet-class>
   </servlet>
   <servlet-mapping>
-  	<servlet-name>addTeamLeader</servlet-name>
-  	<url-pattern>/addteamleader</url-pattern>
+  	<servlet-name>addUser</servlet-name>
+  	<url-pattern>/adduser</url-pattern>
   </servlet-mapping>
 
+  
   <servlet>
-  	<servlet-name>addDeveloper</servlet-name>
-  	<servlet-class>servlets.AddDeveloper</servlet-class>
+  	<servlet-name>addTask</servlet-name>
+  	<servlet-class>servlets.AddTask</servlet-class>
   </servlet>
   <servlet-mapping>
-  	<servlet-name>addDeveloper</servlet-name>
-  	<url-pattern>/adddeveloper</url-pattern>
+  	<servlet-name>addTask</servlet-name>
+  	<url-pattern>/addtask</url-pattern>
   </servlet-mapping>
   
+  <servlet>
+  	<servlet-name>taskDetails</servlet-name>
+  	<jsp-file>/views/taskDetails.jsp</jsp-file>
+  	
+  </servlet>
+  <servlet-mapping>
+  	<servlet-name>taskDetails</servlet-name>
+  	<url-pattern>/task</url-pattern>
+  </servlet-mapping>
+  
+  <servlet>
+  	<servlet-name>State</servlet-name>
+  	<servlet-class>servlets.TaskState</servlet-class>
+  </servlet>
+  <servlet-mapping>
+  	<servlet-name>State</servlet-name>
+  	<url-pattern>/state</url-pattern>
+  </servlet-mapping>
 </web-app>

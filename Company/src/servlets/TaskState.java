@@ -7,24 +7,24 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import models.User;
+import models.Task;
+import utils.DatabaseUtil;
 
-public class AddDeveloper extends HttpServlet{
+public class TaskState extends HttpServlet{
 
 	
+	/**
+	 * 
+	 */
 	private static final long serialVersionUID = 1L;
 
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		String name=req.getParameter("name");
-		String password=req.getParameter("password");
-		int teamLeader=Integer.parseInt(req.getParameter("teamLeader"));
-		User developer=new User(name,password);
-		User.addDeveloper(developer, teamLeader);
+		String taskId=req.getParameter("taskId");
+		int state=Integer.parseInt(req.getParameter("state"));
+		DatabaseUtil.getInstance().changeTaskState(taskId, state);
 		resp.setContentType("text/plain");
-		resp.setCharacterEncoding("UTF-8");
-		resp.getWriter().write("sucess");
+		resp.getWriter().write("changed");
 	}
-	
 	
 }

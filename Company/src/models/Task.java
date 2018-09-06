@@ -1,31 +1,44 @@
 package models;
 
 import java.util.Date;
-import java.util.List;
 
-import utils.DatabaseUtil;
 
 public class Task {
+	
+	private static Task instance=new Task(); 
+	
 	private int id;
+	private String name;
 	private String desc;
 	private Date deadline;
 	private String state;
 
-	private static DatabaseUtil databaseUtil=new DatabaseUtil();
+	public static Task getInstance() {
+		return instance;
+	}
 	
-	public Task(int id, String desc, Date deadline, String state) {
+	
+	public Task() {
+		id=0;
+		name="";
+		desc="";
+		deadline=new Date();
+		state="";
+	}
+	
+	public Task(int id,String name, String desc, Date deadline, String state) {
 		this.id = id;
+		this.name=name;
 		this.desc = desc;
 		this.deadline = deadline;
 		this.state = state;
 	}
 
 	
-	public Task(String desc, Date deadline, String state) {
-		super();
+	public Task(String name,String desc, Date deadline) {
+		this.name=name;
 		this.desc = desc;
 		this.deadline = deadline;
-		this.state = state;
 	}
 
 
@@ -35,6 +48,13 @@ public class Task {
 	
 	public void setId(int id) {
 		this.id = id;
+	}
+	
+	public String getName() {
+		return name;
+	}
+	public void setName(String name) {
+		this.name = name;
 	}
 	
 	public String getDesc() {
@@ -55,13 +75,11 @@ public class Task {
 
 	public String getState() {
 		return state;
-	} void setState(String state) {
-		this.state = state;
 	} 
 	
-	public static List<Task>getTasks(int userId){
-		return databaseUtil.getUserTasks(userId);
-	}
+	void setState(String state) {
+		this.state = state;
+	} 
 	
 	
 }

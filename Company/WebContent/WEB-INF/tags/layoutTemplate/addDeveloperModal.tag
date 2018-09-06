@@ -1,4 +1,5 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ attribute name="teamLeaders" required="true" rtexprvalue="true" type="java.util.ArrayList"%>
 <body>
 	<div class="modal" id="addDeveloperModal">
 		<div class="modal-dialog">
@@ -8,7 +9,7 @@
 					<button type="button" class="close" data-dismiss="modal">&times;</button>
 				</div>
 
-				<form id="addDeveloperFrom" method="post" action="adddeveloper">
+				<form id="addDeveloperForm" method="post" action="adduser" name="addDeveloperForm">
 					<div class="modal-body">
 
 						<div class="form-group">
@@ -21,27 +22,27 @@
 								id="password" class="form-control" type="password"
 								placeholder="Enter The Password">
 						</div>
-
+						
 						<div class="form-group">
-							<label for="teamLeader">Team Leader</label> <select
-								id="teamLeader" class="form-control" name="teamLeader">
-								<c:forEach var="user" items="${users}">
-									<option value="${user.id}">${user.name}</option>
+							<label for="manager">Team Leader</label> <select
+								id="manager" class="form-control" name="manager">
+								<c:forEach var="teamLeader" items="${teamLeaders}">
+									<option value="${teamLeader.id}">${teamLeader.name}</option>
 								</c:forEach>
 							</select>
 						</div>
+						<input type="hidden" name="type"  value="2">
 
 					</div>
 
 
 					<div class="modal-footer">
-						<button type="submit" class="btn btn-primary"
-							onclick="addDeveloper()">Add</button>
-						<button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+						<button type="submit" class="btn btn-primary">Add</button>
+						<button type="button" class="btn btn-danger" data-dismiss="modal"
+							id="developerModalClose">Close</button>
 					</div>
 				</form>
 			</div>
 		</div>
 	</div>
-
 </body>

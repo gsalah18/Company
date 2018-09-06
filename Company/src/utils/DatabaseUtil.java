@@ -6,6 +6,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,24 +16,51 @@ import models.Task;
 import models.User;
 
 public class DatabaseUtil {
+	
+	private static DatabaseUtil instance;
+	
 	private Connection connection;
 
 	public DatabaseUtil() {
 		try {
 			Class.forName("com.mysql.jdbc.Driver");
 			connection = DriverManager.getConnection(Commons.connectionString,
-					Commons.dbUsername, Commons.dbPassword);
+					Commons.dbUsername,
+					Commons.dbPassword);
 		} catch (ClassNotFoundException | SQLException e) {
 			e.printStackTrace();
 		}
 	}
 
-	public String getUserType(int id, String password) {
+	public static DatabaseUtil getInstance() {
+		if(instance==null) {
+			instance=new DatabaseUtil();
+		}
+		return instance;
+	}
+	public String getUserId(String username) {
+		String query="SELECT user_id FROM user WHERE user_name=?";
 		try {
-			Statement stm = connection.createStatement();
-			String query = "SELECT type_value from user, types " + "WHERE user_type = type_no " + "AND user_id='" + id
-					+ "' " + "AND user_password='" + password + "'";
-			ResultSet resultSet = stm.executeQuery(query);
+		PreparedStatement preparedStatement=connection.prepareStatement(query);
+		preparedStatement.setString(1, username);
+		ResultSet resultSet=preparedStatement.executeQuery();
+		if(resultSet.next())
+			return resultSet.getString(1);
+		}catch (SQLException e) {
+		}
+		return "";
+	}
+	
+	public String getUserType(String username, String password) {
+		try {
+
+			String query = "SELECT type_value from user, types "
+					+ "WHERE user_type = type_no AND user_name=? "
+					+ " AND user_password=?";
+			PreparedStatement preparedStatement = connection.prepareStatement(query);
+			preparedStatement.setString(1, username);
+			preparedStatement.setString(2, password);
+			ResultSet resultSet = preparedStatement.executeQuery();
 			if (resultSet.next()) {
 				return resultSet.getString(1);
 			}
@@ -40,100 +68,175 @@ public class DatabaseUtil {
 		}
 
 		catch (SQLException e) {
-			return e.getMessage();
+			System.out.println(e.toString());
+			return "Server error " + e.getMessage();
 		}
 
 	}
-
-	public List<User> getUsers(int teamleader_id) {
+	
+	public List<User> getUsersForManager(String managerId) {
 		List<User> developers = new ArrayList<>();
 		try {
-			Statement stm = connection.createStatement();
 			String query = "SELECT u2.user_id,u2.user_name,u2.user_password"
 					+ ",(SELECT type_value from types where u2.user_type=type_no) "
-					+ " FROM user u1,user u2, user_rel ur" + " WHERE ur.teamleader=u1.user_id"
-					+ " AND ur.developer=u2.user_id AND u1.user_id='" + teamleader_id + "'";
-			System.out.println(query);
-			ResultSet resultSet = stm.executeQuery(query);
+					+ " FROM user u1,user u2, user_rel ur"
+					+ " WHERE ur.teamleader=u1.user_id"
+					+ " AND ur.developer=u2.user_id AND u1.user_id=?";
+
+			PreparedStatement preparedStatement = connection.prepareStatement(query);
+			preparedStatement.setString(1, managerId);
+			ResultSet resultSet = preparedStatement.executeQuery();
+
 			while (resultSet.next()) {
-				User developer = new User(resultSet.getInt(1), resultSet.getString(2), resultSet.getString(3),
+				User developer = new User(resultSet.getInt(1)
+						, resultSet.getString(2)
+						, resultSet.getString(3),
 						resultSet.getString(4));
 				developers.add(developer);
 			}
 
-			return developers;
 		} catch (SQLException e) {
-			return null;
+			System.out.println("Exception from Get Users Method" + e.getMessage());
 		}
+		return developers;
 	}
 
-	public List<Task> getUserTasks(int userId) {
-		List<Task> tasks = new ArrayList<>();
-		try {
-			Statement stm = connection.createStatement();
-			String query = "SELECT t.task_id, t.task_desc, t.task_deadline"
-					+ ", (select state_value from states WHERE state_no=t.task_state)"
-					+ " FROM task t, user u, user_task ut"
-					+ " WHERE u.user_id=ut.user_id AND t.task_id=ut.task_id AND u.user_id='" + userId + "'";
-
-			ResultSet resultSet = stm.executeQuery(query);
-			while (resultSet.next()) {
-				Task task = new Task(resultSet.getInt(1), resultSet.getString(2), resultSet.getDate(3),
-						resultSet.getString(4));
-				tasks.add(task);
-			}
-
-			return tasks;
-		} catch (SQLException e) {
-			return null;
-		}
-	}
-
-	public boolean insertTeamLeader(User teamLeader, int managerId) {
-		String query = "INSERT INTO user (user_name, user_password, user_type) VALUES " + "(?,?,'1')";
+	public String getUserTeamLeader(String userId) {
+		String query = "SELECT u2.user_name FROM user u1, user u2, user_rel ur  "
+				+ "WHERE u1.user_id=?"
+				+ " AND u2.user_id=ur.teamleader AND u1.user_id=ur.developer";
 		try {
 			PreparedStatement preparedStatement = connection.prepareStatement(query);
-			preparedStatement.setString(1, teamLeader.getName());
-			preparedStatement.setString(2, teamLeader.getPassword());
+			preparedStatement.setString(1, userId);
+			ResultSet resultSet = preparedStatement.executeQuery();
+			
+			if (resultSet.next())
+				return resultSet.getString(1);
+			
+		} catch (SQLException e) {
+			System.out.println("Exception from get User Team Leader Method: " + e.getMessage());
+		}
+		return "";
+	}
+
+	
+
+	public boolean insertUser(User user, String managerId) {
+		String query = "INSERT INTO user (user_name, user_password, user_type) VALUES (?,?,?)";
+		try {
+			PreparedStatement preparedStatement = connection.prepareStatement(query);
+			preparedStatement.setString(1, user.getName());
+			preparedStatement.setString(2, user.getPassword());
+			preparedStatement.setString(3, user.getType());
+			
 			preparedStatement.execute();
-			return addDevelopertoTeamLeader(managerId);
+			return insertUsertoManger(managerId);
 
 		} catch (SQLException e) {
-			System.out.println(e.getMessage());
-			try {
-				throw new SkipPageException();
-			} catch (SkipPageException e1) {
-			}
+			System.out.println("Exception from Inser Team Leader Method: " + e.getMessage());
 		}
 		return false;
 	}
 
-	public boolean insertDeveloper(User developer, int teamLeaderId) {
-		String query = "INSERT INTO user (user_name, user_password, user_type) VALUES " + "(?,?,'2')";
-		try {
-			PreparedStatement preparedStatement = connection.prepareStatement(query);
-			preparedStatement.setString(1, developer.getName());
-			preparedStatement.setString(2, developer.getPassword());
-			preparedStatement.execute();
-			return addDevelopertoTeamLeader(teamLeaderId);
 
-		} catch (SQLException e) {
-			System.out.println(e.getMessage());
-			try {
-				throw new SkipPageException();
-			} catch (SkipPageException e1) {
-			}
-		}
-		return false;
-	}
-
-	private boolean addDevelopertoTeamLeader(int teamLeaderId) throws SQLException {
+	private boolean insertUsertoManger(String managerId) throws SQLException {
 		String query = "INSERT INTO user_rel VALUES(?,(SELECT MAX(user_id) FROM user))";
 		PreparedStatement preparedStatement;
 		preparedStatement = connection.prepareStatement(query);
-		preparedStatement.setInt(1, teamLeaderId);
+		preparedStatement.setString(1, managerId);
 		return preparedStatement.execute();
 
+	}
+
+	public List<Task> getUserTasks(String userId) {
+		List<Task> tasks = new ArrayList<>();
+		try {
+			String query = "SELECT t.task_id, t.task_name, t.task_desc, t.task_deadline"
+					+ ", (select state_value from states WHERE state_no=t.task_state)"
+					+ " FROM task t, user u, user_task ut"
+					+ " WHERE u.user_id=ut.user_id AND t.task_id=ut.task_id AND u.user_id=?";
+			PreparedStatement preparedStatement = connection.prepareStatement(query);
+			preparedStatement.setString(1, userId);
+			
+			ResultSet resultSet = preparedStatement.executeQuery();
+			while (resultSet.next()) {
+				Task task = new Task(resultSet.getInt(1), resultSet.getString(2), resultSet.getString(3),
+						resultSet.getDate(4), resultSet.getString(5));
+				tasks.add(task);
+			}
+
+		} catch (SQLException e) {
+			System.out.println("Exception from GetUserTask Method: " + e.getMessage());
+		}
+		return tasks;
+	}
+	
+	public boolean insertTask(Task task, String userId) {
+		String query = "INSERT INTO task (task_name, task_desc, task_deadline,task_state) VALUES (?,?,?, '0')";
+		try {
+			PreparedStatement preparedStatement = connection.prepareStatement(query);
+			preparedStatement.setString(1, task.getName());
+			preparedStatement.setString(2, task.getDesc());
+			preparedStatement.setString(3, Commons.simpleDateFormat.format(task.getDeadline()));
+			preparedStatement.execute();
+			insertUserTask(userId);
+			return true;
+		} catch (SQLException e) {
+			System.out.println( "Exception from Insert Task Method "+ e.getMessage());
+			return false;
+		}
+	}
+
+	private boolean insertUserTask(String userId) throws SQLException {
+		String query = "INSERT INTO user_task VALUES (?, (SELECT MAX(task_id) FROM task))";
+		PreparedStatement preparedStatement = connection.prepareStatement(query);
+		preparedStatement.setString(1, userId);
+		preparedStatement.execute();
+		return true;
+
+	}
+
+	public Task getATask(String taskId) {
+		Task task = new Task();
+		String query = "SELECT task_id, task_name, task_desc,task_deadline" + 
+						 ", (select state_value from states WHERE state_no=task_state)"
+						+ " FROM task WHERE task_id=?";
+		try {
+			PreparedStatement preparedStatement = connection.prepareStatement(query);
+			preparedStatement.setString(1, taskId);
+			ResultSet resultSet = preparedStatement.executeQuery();
+
+			if (resultSet.next()) {
+				task = new Task(Integer.parseInt(resultSet.getString(1)), resultSet.getString(2),
+						resultSet.getString(3), Commons.simpleDateFormat.parse(resultSet.getString(4)),
+						resultSet.getString(5));
+			}
+		} catch (SQLException e) {
+			System.out.println("Exception from get A Task Method "+ e.getMessage());
+		} catch (NumberFormatException e) {
+			System.out.println("Exception from get A Task Method "+e.getMessage());
+		} catch (ParseException e) {
+			System.out.println("Exception from get A Task Method "+e.getMessage());
+		}
+		return task;
+	}
+	
+	public static Task getTask(String taskId) {
+		return DatabaseUtil.getInstance().getATask(taskId);
+	}
+	
+	public boolean changeTaskState(String taskId, int state) {
+		String query="UPDATE task SET task_state=? WHERE task_id=?";
+		try {
+			PreparedStatement preparedStatement=connection.prepareStatement(query);
+			preparedStatement.setInt(1,state);
+			preparedStatement.setString(2, taskId);
+			preparedStatement.execute();
+		}catch (SQLException e) {
+			System.out.println("Exception from Change State Method"+ e.getMessage());
+		}
+		return false;
+		
 	}
 
 }

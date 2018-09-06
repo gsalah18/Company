@@ -9,18 +9,21 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import models.Task;
+import utils.DatabaseUtil;
 
-public class ShowTasks extends HttpServlet{
+public class Tasks extends HttpServlet{
 
 	private static final long serialVersionUID = 1L;
 
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		int userId = Integer.parseInt(req.getParameter("user_id"));
-		List<Task>tasks=Task.getTasks(userId);
-		
+		String userId = req.getParameter("user_id");
+		String userType = req.getParameter("user_type");
+		List<Task>tasks=DatabaseUtil.getInstance().getUserTasks(userId);
+		req.setAttribute("userType", userType);
+		req.setAttribute("userId", userId);
 		req.setAttribute("tasks", tasks);
-		req.getRequestDispatcher("views/showTasks.jsp").forward(req, resp);
+		req.getRequestDispatcher("views/tasks.jsp").forward(req, resp);
 	}
 	
 	

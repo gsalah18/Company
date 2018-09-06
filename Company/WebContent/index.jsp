@@ -1,9 +1,12 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
-    pageEncoding="ISO-8859-1"%>
+	pageEncoding="ISO-8859-1"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <!DOCTYPE html>
 <html>
 <head>
 <meta charset="ISO-8859-1">
+
+
 <title>Login Page</title>
 
 
@@ -22,10 +25,31 @@
 	src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"
 	integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49"
 	crossorigin="anonymous"></script>
-	
-	
+
+<script
+	src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+
 </head>
 <body>
+	<script type="text/javascript" src="js/login.js"></script>
+	<c:if
+		test="${cookie.containsKey('userId') && cookie.containsKey('userType')}">
+		<c:set scope="session" var="userId" value="${cookie.userId.value}" />
+		<c:set scope="session" var="userType" value="${cookie.userType.value}" />
+		<c:choose>
+			<c:when test="${ cookie.userType.value == 'Manager' }">
+				<c:redirect url="managerhome"/>
+			</c:when>
+			<c:when test="${ cookie.userType.value == 'Team Leader' }">
+				<c:redirect url="teamleaderhome"/>
+			</c:when>
+			<c:otherwise>
+				<c:redirect url="developerhome"/>
+			</c:otherwise>
+		</c:choose>
+	</c:if>
+
 	<div class="container" style="padding: 20px">
 		<div class="row">
 			<div class="col-md-4 offset-md-4">
@@ -37,20 +61,20 @@
 
 		<div class="row" style="padding-top: 100px">
 			<div class="col-md-8 offset-md-2">
-			
-				<form method="POST" action="login">
+
+				<form method="POST" action="login" id="loginForm">
 					<div class="form-group">
-						<label for="userId">User Id</label> <input name="userId"
-							id="userId" placeholder="Enter Your Username"
+						<label for="username">User Name</label> <input name="username"
+							id="username" placeholder="Enter Your Username"
 							class="form-control">
-						
+
 					</div>
 					<div class="form-group">
 						<label for="password">Password</label> <input name="password"
 							id="password" type="password" class="form-control"
-							placeholder="Entr Your Password">
+							placeholder="Enter Your Password">
 					</div>
-					<h3 style="color: red">${sessionScope.error}</h3>
+					<h3 style="color: red" id="errorText"></h3>
 					<button type="submit" class="btn btn-primary">Login</button>
 				</form>
 			</div>

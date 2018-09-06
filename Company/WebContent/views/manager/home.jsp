@@ -7,7 +7,7 @@
 <html>
 <head>
 <meta charset="ISO-8859-1">
-<title>Home</title>
+<title>Manager Home</title>
 <style type="text/css">
 a:link {
 	color: black
@@ -44,33 +44,7 @@ li {
 			</div>
 
 			<div class="col-md-8 offset-md-2">
-				<div class="form-group">
-					<label for="seachText">Search Text Field</label> <input type="text"
-						id="searchText" class="form-control" placeholder="Type to Search">
-				</div>
-				<table class="table" id="myTable">
-					<thead>
-						<tr>
-							<th scope="col">Id</th>
-							<th scope="col">Name</th>
-							<th scope="col">Tasks</th>
-							<th scope="col">Developers</th>
-						</tr>
-					</thead>
-
-					<tbody>
-						<c:forEach var="user" items="${users}">
-							<tr>
-								<th scope="row">${user.id}</th>
-								<td>${user.name}</td>
-								<td><a href="tasks?user_id=${user.id}"><button
-											class="btn btn-primary">Show Tasks</button></a></td>
-								<td><a href="developers?user_id=${user.id}"><button
-											class="btn btn-primary">Show Developers</button></a></td>
-							</tr>
-						</c:forEach>
-					</tbody>
-				</table>
+				<layout:teamleaderTable teamLeaders="${teamLeaders}"/>
 			</div>
 
 		</div>
@@ -80,48 +54,6 @@ li {
 
 
 	<layout:addTeamLeaderModal />
-	<div class="modal" id="addDeveloperModal">
-		<div class="modal-dialog">
-			<div class="modal-content">
-				<div class="modal-header">
-					<h4 class="modal-title">Add Developer</h4>
-					<button type="button" class="close" data-dismiss="modal">&times;</button>
-				</div>
-
-				<form id="addDeveloperFrom" method="post" action="adddeveloper">
-					<div class="modal-body">
-
-						<div class="form-group">
-							<label for="for">Name</label> <input name="name" id="name"
-								class="form-control" type="text" placeholder="Enter The Name">
-						</div>
-
-						<div class="form-group">
-							<label for="password">Password</label> <input name="password"
-								id="password" class="form-control" type="password"
-								placeholder="Enter The Password">
-						</div>
-
-						<div class="form-group">
-							<label for="teamLeader">Team Leader</label> <select
-								id="teamLeader" class="form-control" name="teamLeader">
-								<c:forEach var="user" items="${users}">
-									<option value="${user.id}">${user.name}</option>
-								</c:forEach>
-							</select>
-						</div>
-
-					</div>
-
-
-					<div class="modal-footer">
-						<button type="submit" class="btn btn-primary">Add</button>
-						<button type="button" class="btn btn-danger" data-dismiss="modal"
-							id="developerModalClose">Close</button>
-					</div>
-				</form>
-			</div>
-		</div>
-	</div>
+	<layout:addDeveloperModal teamLeaders="${teamLeaders}"/>
 </body>
 </html>
