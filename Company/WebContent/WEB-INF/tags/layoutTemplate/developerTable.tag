@@ -21,7 +21,7 @@
 				<tr>
 					<th scope="row">${user.id}</th>
 					<td>${user.name}</td>
-					<td><a href="tasks?user_id=${user.id}&user_type=Developer"><button
+					<td><a href="tasks?user_id=${user.id}"><button
 								class="btn btn-primary">Show Tasks</button></a></td>
 				</tr>
 			</c:forEach>

@@ -1,6 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
 	pageEncoding="ISO-8859-1"%>
-<%@ taglib uri="/customTags/getTaskFunc.tld" prefix="gettask"%>
+<%@ taglib uri="/customTags/getTaskFunc.tld" prefix="tldFunctions"%>
 <%@ taglib tagdir="/WEB-INF/tags/layoutTemplate" prefix="layout"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <!DOCTYPE html>
@@ -10,8 +10,8 @@
 
 <script
 	src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-	<c:set var="task" scope="page" value="${gettask:getTask(param.taskId)}" />
-	
+	<c:set var="task" scope="page" value="${tldFunctions:getTask(param.taskId)}" />
+	<script type="text/javascript" src="js/assignTask.js"></script>
 <title>${ task.name }</title>
 </head>
 <body>
@@ -50,7 +50,7 @@
 		<div class="row">
 			<div class="col-md-4 offset-md-4">
 				<h4>Task State : ${task.state }</h4>
-				<c:if test="${sessionScope.userType == param.userType}">
+				<c:if test="${sessionScope.userType == 'Team Leader'}">
 					<form action="state" method="post" id="stateForm">
 						<div class="form-group">
 							<label for="stateSelect">Change Task State : </label> <select
@@ -66,8 +66,27 @@
 
 					</form>
 				</c:if>
+				
 			</div>
 		</div>
+		<c:if test="${sessionScope.userType == 'Team Leader'}">
+			
+			<div class="row">
+				<div class="col-md-4 offset-md-4">
+					<form method="POST" action="assigntask" id="assignTaskForm">
+						<div class="form-group">
+							<select name="receiverId" class="form-control">
+								<c:forEach var="user" items="${ tldFunctions: getUsers()}">
+									<option  value="${ user.id }"> ${ user.name } , ${ user.type }</option>
+								</c:forEach>
+							</select>
+						</div>
+						<input type="hidden" value="${ task.id }" name="taskId">
+						<button class="btn btn-primary" type="submit">Assign Task</button>					
+					</form>
+				</div>
+			</div>
+		</c:if>
 	</div>
 </body>
 </html>

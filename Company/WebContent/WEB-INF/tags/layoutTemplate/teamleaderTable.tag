@@ -21,7 +21,7 @@
 				<tr>
 					<th scope="row">${teamLeader.id}</th>
 					<td>${teamLeader.name}</td>
-					<td><a href="tasks?user_id=${teamLeader.id}&user_type=Team Leader"><button
+					<td><a href="tasks?user_id=${teamLeader.id}"><button
 								class="btn btn-primary">Show Tasks</button></a></td>
 					<td><a href="developers?user_id=${teamLeader.id}"><button
 								class="btn btn-primary">Show Developers</button></a></td>

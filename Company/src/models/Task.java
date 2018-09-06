@@ -5,26 +5,11 @@ import java.util.Date;
 
 public class Task {
 	
-	private static Task instance=new Task(); 
-	
 	private int id;
 	private String name;
 	private String desc;
 	private Date deadline;
 	private String state;
-
-	public static Task getInstance() {
-		return instance;
-	}
-	
-	
-	public Task() {
-		id=0;
-		name="";
-		desc="";
-		deadline=new Date();
-		state="";
-	}
 	
 	public Task(int id,String name, String desc, Date deadline, String state) {
 		this.id = id;
@@ -34,7 +19,6 @@ public class Task {
 		this.state = state;
 	}
 
-	
 	public Task(String name,String desc, Date deadline) {
 		this.name=name;
 		this.desc = desc;
@@ -80,6 +64,5 @@ public class Task {
 	void setState(String state) {
 		this.state = state;
 	} 
-	
-	
+		
 }

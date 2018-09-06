@@ -24,7 +24,16 @@
 					<th scope="row">${task.id}</th>
 					<td>${task.name}</td>
 					<td>${task.deadline}</td>
-					<td><a href="task?taskId=${ task.id }&userType=${userType}"><button class="btn btn-primary"				
+					
+					<c:if test="${sessionScope.userType == 'Team Leader' }">
+						<c:set scope="page" value="teamleadertask" var="url"></c:set>
+					</c:if>
+					
+					<c:if test="${sessionScope.userType == 'Developer' }">
+						<c:set scope="page" value="developertask" var="url"></c:set>
+					</c:if>
+					
+					<td><a href="${ url }?taskId=${ task.id }"><button class="btn btn-primary"				
 					>Details</button></a></td>
 				</tr>
 			</c:forEach>

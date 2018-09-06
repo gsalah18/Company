@@ -10,10 +10,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-
 public class Index extends HttpServlet {
 
-	
 	private static final long serialVersionUID = 1L;
 
 	private HttpServletRequest request;
@@ -22,21 +20,17 @@ public class Index extends HttpServlet {
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		request = req;
 
-		System.out.println("I'm in Index Servlet");
-
 		if (checkValueExistsInCookies("userId") && checkValueExistsInCookies("userType")) {
 			String userType = getCookieValue("userType");
 			HttpSession session = req.getSession();
 			session.setAttribute("userId", getCookieValue("userId"));
 			session.setAttribute("userType", userType);
-			
-			if(userType.equals("Manager")) {
+
+			if (userType.equals("Manager")) {
 				resp.sendRedirect("managerhome");
-			}
-			else if(userType.equals("Team Leader")) {
+			} else if (userType.equals("Team Leader")) {
 				resp.sendRedirect("teamleaderhome");
-			}
-			else{
+			} else {
 				resp.sendRedirect("developerhome");
 			}
 		} else {
@@ -47,9 +41,11 @@ public class Index extends HttpServlet {
 	}
 
 	private boolean checkValueExistsInCookies(String key) {
-		for (Cookie cookie : request.getCookies()) {
-			if (cookie.getName().equals(key))
-				return true;
+		if (request.getCookies() != null) {
+			for (Cookie cookie : request.getCookies()) {
+				if (cookie.getName().equals(key))
+					return true;
+			}
 		}
 		return false;
 	}

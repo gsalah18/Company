@@ -18,7 +18,16 @@ public class Developers extends HttpServlet{
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		String user_id = req.getParameter("user_id");
-		List<User>developers=DatabaseUtil.getInstance().getUsersForManager(user_id);
+		
+		if(req.getSession().getAttribute("userId") == null
+				|| req.getSession().getAttribute("userType") == null
+				|| user_id == null || user_id.length() == 0){
+			resp.sendRedirect("index");
+			return;
+		}
+		
+		
+		List<User>developers = DatabaseUtil.getInstance().getUsersForManager(user_id);
 		
 		req.setAttribute("developers", developers);
 		System.out.println("I'm in Developer Servlet");

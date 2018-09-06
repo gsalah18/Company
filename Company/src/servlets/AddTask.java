@@ -19,9 +19,20 @@ public class AddTask extends HttpServlet {
 
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		String userId= req.getParameter("userId");
-		String name =req.getParameter("name");
+		String userId = req.getParameter("userId");
+		String name = req.getParameter("name");
 		String desc = req.getParameter("desc");
+		
+		if(req.getSession().getAttribute("userId") == null
+				|| req.getSession().getAttribute("userType") == null 
+				|| (userId == null || userId.length() == 0)
+				|| (name == null || name.length() == 0)
+				|| (desc == null || desc.length() == 0)) {
+			resp.sendRedirect("index");
+			return;
+		}
+		
+		
 		Date deadline;
 		
 		try {

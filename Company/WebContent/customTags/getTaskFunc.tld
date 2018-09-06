@@ -14,4 +14,13 @@
 		</function-signature>
 		
 	</function>
+	
+	<function>
+		<name>getUsers</name>
+		<function-class>utils.DatabaseUtil</function-class>
+		<function-signature>
+			java.util.List getUsers()
+		</function-signature>
+		
+	</function>
 </taglib>

@@ -7,9 +7,7 @@ $(document).ready(
 						var $form = $(this);
 						$.post($form.attr("action"), $form.serialize(),
 								function(response) {
-									if (response == "managerhome"
-											|| response == "teamleaderhome"
-											|| response == "developerhome") {
+									if (response == "home"){
 										window.location.href = response
 									} else {
 										$("#errorText").html(response);		

@@ -20,34 +20,32 @@ public class LoginServlet extends HttpServlet {
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		request = req;
 		response = resp;
-		if (requiredValidation(req.getParameter("username"), "username")
-				&& requiredValidation(req.getParameter("password"), "Password")) {
-				String username =req.getParameter("username");
-				String password = req.getParameter("password");
+		
+		String username = req.getParameter("username");
+		String password = req.getParameter("password");
+		
+		if((username == null || username.length() == 0)
+				|| (username == null || username.length() == 0)) {
+			resp.sendRedirect("index");
+			return;
+		}
+		
+		
+		if (requiredValidation(username, "username")
+				&& requiredValidation(password, "Password")) {
+				
 
 				String userType = DatabaseUtil.getInstance().getUserType(username, password);
 
 				if (checkError(userType)) {
-					String userId= DatabaseUtil.getInstance().getUserId(username);
-					setCookie(userId + "", userType);
+					String userId = DatabaseUtil.getInstance().getUserId(username);
+					setCookie(userId, userType);
 					request.getSession().setAttribute("userId", userId);
 					request.getSession().setAttribute("userType", userType);
-
-					if (userType.equalsIgnoreCase("Manager")) {
-						sendResponseMSG("managerhome");
-					} else if (userType.equalsIgnoreCase("Team Leader"))
-						sendResponseMSG("teamleaderhome");
-					else if (userType.equalsIgnoreCase("Developer"))
-						sendResponseMSG("developerhome");
+					sendResponseMSG("home");
 				}
 		}
 	}
-
-	@Override
-	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		super.doGet(req, resp);
-	}
-
 	
 	void setCookie(String userId, String userType) {
 		int year = 60 * 60 * 24 * 365;
